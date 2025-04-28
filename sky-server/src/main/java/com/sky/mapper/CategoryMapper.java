@@ -16,4 +16,5 @@ public interface CategoryMapper {
             "(#{type}, #{name}, #{sort}, #{status}, #{createTime}, #{updateTime}, #{createUser}, #{updateUser})")
     void insert(Category category);
 
+    void update(Category category);
 }

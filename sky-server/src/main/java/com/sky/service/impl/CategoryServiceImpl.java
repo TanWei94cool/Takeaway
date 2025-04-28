@@ -53,4 +53,17 @@ public class CategoryServiceImpl implements CategoryService {
 
         categoryMapper.insert(category);
     }
+
+    /**
+     * 启用禁用分类
+     * @param status
+     * @param id
+     */
+    public void startorstop(Integer status, Long id) {
+        Category category = Category.builder()
+                .status(status)
+                .id(id)
+                .build();
+        categoryMapper.update(category);
+    }
 }
