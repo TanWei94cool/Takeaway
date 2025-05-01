@@ -2,6 +2,7 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
@@ -9,6 +10,8 @@ import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
 import com.sky.entity.Employee;
 import com.sky.mapper.CategoryMapper;
+import com.sky.mapper.DishMapper;
+import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
 import org.springframework.beans.BeanUtils;
@@ -23,6 +26,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     CategoryMapper categoryMapper;
+
+    @Autowired
+    DishMapper dishMapper;
+
+    @Autowired
+    SetmealMapper setmealMapper;
     /**
      * 分类分页查询
      * @param categoryPageQueryDTO
@@ -72,6 +81,50 @@ public class CategoryServiceImpl implements CategoryService {
      * @param id
      */
     public void delete(Long id) {
+        //判断当前分类是否关联了菜品，如果关联了，则抛出业务异常
+        Integer count = dishMapper.getCountByCategoryId(id);
+        if (count == 0){
+            //当下前分类关联了菜品，不能删除
+            throw new RuntimeException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH);
+        }
+        count = setmealMapper.getCountByCategoryId(id);
+        //判断当前分类是否关联了套餐，如果关联了，则抛出业务异常
+        if (count > 0){
+            //当前分类关联了套餐，不能删除
+            throw new RuntimeException(MessageConstant.CATEGORY_BE_RELATED_BY_SETMEAL);
+        }
         categoryMapper.deleteById(id);
+    }
+
+    /**
+     * 根据id查询分类
+     * @param id
+     * @return
+     */
+    public Category getById(Long id) {
+        Category category = categoryMapper.getById(id);
+        return category;
+    }
+
+    /**
+     * 修改分类
+     * @param categoryPageQueryDTO
+     * @return
+     */
+    public Category update(CategoryPageQueryDTO categoryPageQueryDTO) {
+        Category category = new Category();
+        BeanUtils.copyProperties(categoryPageQueryDTO,category);
+        categoryMapper.update(category);
+
+        return category;
+    }
+
+    /**
+     * 根据类型查询分类
+     * @param type
+     * @return
+     */
+    public List<Category> list(Integer type) {
+        return categoryMapper.list(type);
     }
 }
