@@ -92,10 +92,10 @@ public class CategoryController {
      */
     @PutMapping
     @ApiOperation("修改分类")
-    public Result<Category> update(@RequestBody CategoryPageQueryDTO categoryPageQueryDTO){
+    public Result<String> update(@RequestBody CategoryPageQueryDTO categoryPageQueryDTO){
         log.info("修改分类");
-        Category category = categoryService.update(categoryPageQueryDTO);
-        return Result.success(category);
+        categoryService.update(categoryPageQueryDTO);
+        return Result.success();
     }
 
     /**

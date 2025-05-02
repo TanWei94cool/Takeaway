@@ -48,7 +48,7 @@ public interface CategoryService {
      * @param categoryPageQueryDTO
      * @return
      */
-    Category update(CategoryPageQueryDTO categoryPageQueryDTO);
+    void update(CategoryPageQueryDTO categoryPageQueryDTO);
 
     /**
      * 根据类型查询分类
